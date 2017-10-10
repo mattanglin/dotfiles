@@ -1,0 +1,40 @@
+# Your snippets
+#
+# Atom snippets allow you to enter a simple prefix in the editor and hit tab to
+# expand the prefix into a larger code block with templated values.
+#
+# You can create a new snippet in this file by typing "snip" and then hitting
+# tab.
+#
+# An example CoffeeScript snippet to expand log to console.log:
+#
+# '.source.coffee':
+#   'Console log':
+#     'prefix': 'log'
+#     'body': 'console.log $1'
+#
+# Each scope (e.g. '.source.coffee' above) can only be declared once.
+#
+# This file uses CoffeeScript Object Notation (CSON).
+# If you are unfamiliar with CSON, you can read more about it in the
+# Atom Flight Manual:
+# http://flight-manual.atom.io/using-atom/sections/basic-customization/#_cson
+'.source.js':
+  'React functional Component':
+    'prefix': 'rfc'
+    'body': "import React from 'react';\nimport PropTypes from 'prop-types';\n\nconst ${1:MyComponent} = ({\n  ${2:someprop,}\n}) => (\n  <div>\n    {someprop}\n  </div>\n);\n\n${1:MyComponent}.propTypes = {\n  ${2:someprop}: PropTypes.string,\n};\n\nexport default ${1:MyComponent};\n"
+  'Glamorous functional Component':
+    'prefix': 'rfcg'
+    'body': "import React from 'react';\nimport PropTypes from 'prop-types';\nimport glamorous from 'glamorous';\nimport { style } from './${1:MyComponent}.style';\n\nconst ${1:MyComponent} = ({\n  className,\n}) => (\n  <div className={className}>\n    Render\n  </div>\n);\n\n${1:MyComponent}.propTypes = {\n  /**\n   * className required by glamorous\n   * @ignore\n   */\n  className: PropTypes.string,\n};\n\nexport default glamorous(${1:MyComponent})(style);\n"
+  'React functional Component ReduxForm':
+    'prefix': 'rfcf'
+    'body': "import React from 'react';\nimport PropTypes from 'prop-types';\nimport { reduxForm, Field } from 'redux-form';\nimport { FieldInput, Button } from 'kniferoll';\nimport { connect } from 'react-redux';\nimport { getLoading, getError } from 'state/selectors/someformstate';\nimport * as actions from 'state/modules/someformstate';\nimport validate from './validate';\n\nconst mapStateToProps = (state) => ({\n  loading: getLoading(state),\n  error: getError(state),\n});\nconst mapDispatchToProps = {\n  submitFunc: actions.submitFunc,\n};\n\nconst ${1:MyComponent}Form = ({\n  handleSubmit,\n  submitFunc,\n  loading,\n  error,\n}) => (\n  <form onSubmit={handleSubmit(submitFunc)}>\n    {error &&\n      <div>\n        {error}\n      </div>\n    }\n    <Field\n      component={FieldInput}\n      name=\"fieldname\"\n      label=\"Field Label\"\n    />\n    <Button\n      onClick={handleSubmit(submitFunc)}\n      loading={loading}\n    >\n      Submit\n    </Button>\n  </form>\n);\n\n${1:MyComponent}Form.propTypes = {\n  handleSubmit: PropTypes.func.isRequired,\n  submitFunc: PropTypes.func.isRequired,\n  error: PropTypes.any,\n  loading: PropTypes.bool,\n};\n\nexport default connect(mapStateToProps, mapDispatchToProps)(\n  reduxForm({\n    form: 'formName',\n    validate,\n  })(${1:MyComponent}Form)\n);\n"
+  'React functional Component Connected':
+    'prefix': 'rfcc'
+    'body': "import React from 'react';\nimport PropTypes from 'prop-types';\nimport { connect } from 'react-redux';\nimport { selectedState } from 'state/selectors/somestatemodule';\nimport * as actions from 'state/modules/somestatemodule';\n\nconst mapStateToProps = (state) => ({\n  selected: selectedState(state),\n});\nconst mapDispatchToProps = {\n  someDispatch: actions.someDispatch,\n};\n\nconst ${1:MyComponent} = ({\n  selected,\n  someDispatch,\n}) => (\n  <div>\n    <div onClick={someDispatch}>\n      {selected}\n    </div>\n  </div>\n);\n\n${1:MyComponent}.propTypes = {\n  selected: PropTypes.any,\n  someDispatch: PropTypes.func.isRequired,\n};\n\nexport default connect(mapStateToProps, mapDispatchToProps)(${1:MyComponent});\n"
+  'Redux Async Reducer':
+    'prefix': 'rar'
+    'body': "export const ASYNC_ACTION_REQUEST = 'module/ASYNC_ACTION_REQUEST';\nexport const ASYNC_ACTION_SUCCESS = 'module/ASYNC_ACTION_SUCCESS';\nexport const ASYNC_ACTION_FAILURE = 'module/ASYNC_ACTION_FAILURE';\n\nexport const doAsyncAction = (data) => ({\n  types: [ASYNC_ACTION_REQUEST, ASYNC_ACTION_SUCCESS, ASYNC_ACTION_FAILURE],\n  promise: (client) => client.post('/some/api/path', { data }),\n});\n\nconst initialState = {\n  loading: false,\n  error: false,\n  message: null,\n};\n\nconst reducer = (state = initialState, action = {}) => {\n  switch (action.type) {\n    case ASYNC_ACTION_REQUEST:\n      return {\n        ...state,\n        loading: true,\n      };\n    case ASYNC_ACTION_SUCCESS:\n      return {\n        ...state,\n        loading: false,\n        error: false,\n        message: null,\n      };\n    case ASYNC_ACTION_FAILURE:\n      return {\n        ...state,\n        loading: false,\n        error: true,\n        message: action.error,\n      };\n    default:\n      return state;\n  }\n};\n\nexport default reducer;\n"
+  'Redux Async Selector':
+    'prefix': 'ras'
+    'body': "import resolvePath from 'object-resolve-path';\n// import { createSelector } from 'reselect';\n\nexport const getLoading = (state) => resolvePath(state, 'module.loading');\nexport const getError = (state) => (\n  resolvePath(state, 'module.error') ?\n  resolvePath(state, 'module.message') :\n  undefined\n);\n"
